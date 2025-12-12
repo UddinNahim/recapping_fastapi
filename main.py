@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException ,status
 from pydantic import BaseModel, HttpUrl
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -63,3 +63,16 @@ def member_create(data: Member):
     new_data = cursor.fetchone()
     conn.commit()
     return {"data": new_data}
+
+@app.get("/books/{id}")
+def get_book(id:int):
+    cursor.execute("SELECT * FROM books where id = %s",(id,))
+    book = cursor.fetchone()
+    if not book:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,                            
+        detail=f"book with id:{id} was not found"
+
+        )
+    return {"course_detail": book}
+
+    
