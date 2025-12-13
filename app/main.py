@@ -109,6 +109,18 @@ def get_book(id:int):
         )
     return {"book_detail": book} 
 
+
+@app.get("/coursealchemy/{id}")
+def get_course(id: int, db:Session = Depends(get_db)):
+    course = db.query(models.Course).filter(models.Course.id == id).first()
+    if not course:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,                            
+        detail=f"course with id:{id} was not found"
+
+        )
+    return {"Course_detail": course}
+
+
 @app.delete("/book/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_book(id: int):
     # First delete related rows
@@ -172,6 +184,7 @@ def get_member(id:int):
 
 @app.get("/coursealchemy/")
 def course(db:Session = Depends(get_db)):
-    return {"status": "Sqlalchemy orm working "}
+    course = db.query(models.Course).all()
+    return {"course": course}
 
     
